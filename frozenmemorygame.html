@@ -1,0 +1,437 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>frozen memory game</title>
+    <style>
+     
+        html{
+            margin:0;
+        }
+        body{
+            background:url('./img/frozen_twojpg.jpg') no-repeat center center/cover;
+            display: flex;
+            flex-direction: column;
+            align-items:center;
+            -webkit-user-select:none;
+            -moz-user-select:none;
+            -o-user-select:none;
+            user-select:none;
+            overflow: hidden;
+        }
+
+        #content{
+            width:800px;
+            height:600px;
+            display: flex;
+            flex-direction: column;
+            align-items:center;
+        }
+
+        #select{
+            width:1200px;
+            height:200px;
+            top:50%;
+            left:50%;
+            display:flex;
+            justify-content: space-evenly;
+            background:rgba(0,0,0,0.01);
+            align-items:center;
+        }
+        .option{
+            width:200px;
+            height:130px;
+            filter:opacity(0.5);
+        }
+        .option .txt{
+            position:relative;
+            bottom:40%;
+            left:10%;
+
+        }
+        .option:hover{
+          cursor:pointer;
+          filter:none;
+        }
+
+
+/* 遊戲介面 */
+     .box{
+      background:red;
+      position:absolute;
+      width:500px;
+      height:300px;
+    }
+
+    /* 計分計時區 */
+    .board{
+        left:5%;
+        width:500px;
+        height:200px;
+        position:absolute;
+        top:1%; 
+        pointer-events: none;
+    }
+
+    #text-time{
+        height: 80px;
+        width: 80px;
+        position:absolute;
+        left:15%;
+        bottom:15%;
+        color:seashell;
+        font-family:'微軟正黑體';
+        font-weight:bolder;
+        font-size:30px;
+        pointer-events: none;
+        background-image: url(./圓餅.gif);
+        background-size:80px 80px;
+        line-height: 80px;
+        text-align: center;
+    }
+    #text-score{
+        height: 45px;
+        width:80px;
+        position:absolute;
+        left:23%;
+        top:28%;
+        color:white;
+        font-family:'微軟正黑體';
+        font-weight: bolder;
+        font-size:35px;
+        pointer-events: none;
+        line-height: 15px;
+    }
+    #scorepic{
+        position:absolute;
+        left:5%;
+        top:18%;
+    }
+
+
+    /* 翻牌遊戲區 */
+    #game {
+      background:rgba(99, 163, 206, 1);
+      width: 1500px;
+      height:705px;
+      top:13.5%;
+      left: 12%;
+      position:absolute;
+      /* line-height: 150px; */
+      
+    }
+    .card {
+      /* background:red; */
+      border-radius:10%;
+      /* padding:5px; */
+      width: 290px;
+      height: 350px;
+      /* 告訴card裡面是個3d的空間 */
+      transform-style: preserve-3d;
+       /* 疊在一起: 外層relative，內層absolute */
+      position: relative;
+      /* 翻的速度:0.5秒的轉場 */
+      transition: all 0.4s;
+      display: inline-block;
+      position: relative;
+    }
+
+
+    /* 蓋起來: 兩隻手再一起轉180度 */
+    .close {
+      transform: rotateY(180deg);
+    }
+    .front {
+      border-radius:10%;
+      width: 90%;
+      height: 90%;
+            /* 縮放圖片全部顯示 */
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: absolute;
+    }
+    .back {
+      border-radius:10%;
+      width: 90%;
+      height: 90%;
+      background-image: url('./img/back.jpg');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: absolute;
+      /* 顏色背面垂直往下轉: 手背貼手背 */
+      transform: rotateY(180deg);
+    }
+    #go{
+        width:200px;
+        height:130px;
+    }
+    #gifpic img{
+      width: 100%;
+      height: 100%;
+      margin: auto;
+      position: absolute;
+      left: 0%;
+      top: 0%;
+      z-index: 2;
+    }
+
+    .videobtns{
+      background-color: rgba(181, 225, 251, 0.746);
+      color:rgb(45, 94, 185);
+      font-family:'微軟正黑體';
+      font-weight: bolder;
+      font-size:30px;
+      border: solid 5px;
+      padding: 2px;
+      margin: 2px;
+      /* filter:opacity(0.5); */
+    }
+    .videobtns:hover{
+      filter:hue-rotate(20deg)
+    }
+    .videobtn{
+      background-color: rgba(181, 225, 251, 0.746);
+      color:rgb(59, 45, 185);
+      font-family:'微軟正黑體';
+      font-weight: bolder;
+      font-size:30px;
+      border: solid 5px;
+      padding: 2px;
+      margin: 2px;
+      /* filter:opacity(0.5); */
+    }
+    .videobtn:hover{
+      filter:hue-rotate(20deg)
+    }
+    #win{
+      width: 1500px;
+      height:705px;ight:height:705px;;
+      background-image: url(./congrat.gif);
+      background-size: cover;
+      background-repeat: no-repeat;
+      z-index: 999;
+    }
+    #lose{
+      width: 1500px;
+      height:705px;
+      background-image: url(./img/失敗.gif);
+      background-size: cover;
+      background-repeat: no-repeat;
+      z-index: 999;
+      position: relative;
+    }
+    .restart{
+      background-color: rgba(181, 225, 251, 0.746);
+      font-family:'微軟正黑體';
+      font-weight: bolder;
+      font-size:35px;
+      border: solid 5px rgb(64, 101, 200);;
+      padding: 2px;
+      margin: 2px;
+    }
+    .restart a{
+      text-decoration: none;
+      color:rgb(64, 101, 160);
+    }
+    </style>
+</head>
+<body>
+
+
+<div id="content">
+  <div id="gifpic">
+    <img src="./img/frozenbegining.gif">
+  </div>
+    <div id="topic">
+        <img id="titlepic" src="./frozenmemorygame.png">
+        </div>
+    <!-- <div style="float: right;"><img style="float: right;" src="./elsarvsd.gif"><div> -->
+    <div style="float: left;margin-left: 10%;" ><video style="height: 550px;width: 1000px;" id="myVideo" src="./letitgo字幕.mp4"><track src="./letitgo.srt"></video></div>
+    <div style="clear: both;">
+    <button class="videobtn" onclick="document.getElementById('myVideo').play()">&nbsp;&nbsp;▶ 觀看MV&nbsp;&nbsp;</button>
+    <button class="videobtns" onclick="document.getElementById('myVideo').pause()">&nbsp;⏸暫停MV &nbsp;</button>
+    <p align="center"><img style="width: 50px;" src="./img/音量.png"><input type="range" value="75" min="0" max="100" step="1" class="videobtns" onclick="document.getElementById('myVideo').volume = (value / 100)"></input></p>
+    </div>
+    <!-- <button class="videobtns" onclick="document.getElementById('myVideo').volume = (value / 100)"">🔊</input> -->
+    <!-- <button class="videobtns" onclick="document.getElementById('myVideo').volume-=0.1">&nbsp;🔈&nbsp;</button> -->
+    <div id="select">
+        <div class="option" id="startbtn">
+          <img id="go" src="./img/1200px-Frozen_logo.svg.png" alt="">
+          
+        </div>
+    </div>
+    <div id="game"><img id="win" src="./img/congrat.gif"><img id="lose" src="./img/失敗.gif"></div>
+
+</div>
+
+<div class="board">
+  <div><img id="scorepic" style="width:80px;height:50px;" src="./score2.png" alt=""><span id="text-score">0</span></div>
+  <div><span id="text-time">60</span></div>
+</div>
+
+
+<!-- 遊戲介面 -->
+
+    <script src="./jquery-3.5.1.min.js"></script> 
+    <script>
+
+      
+// 首頁畫面，隱藏遊戲介面與計分計時區
+    $('#game').css('display', 'none')
+    $('.board').css('display', 'none')
+    $('#win').css('display', 'none')
+    $('#lose').css('display', 'none')
+    // $('#word').css('display', 'none')
+    // $('.restart').css('display', 'none')
+
+let score = 0
+let timeleft = 180 
+let gameTimer = 0
+  
+// 翻牌配對
+// 是否點到card，是的話執行function
+$('#game').on('click', '.card', function(){
+// 如果card張數小於2，才可以翻牌>>>>>>>限制翻開張數只有2張
+// .card:not(.close)').length  翻開總張數
+    if( $('.card:not(.close)').length < 2) {
+    $(this).removeClass('close')
+    }
+
+// 如果card張數等於2
+    if( $('.card:not(.close)').length == 2) {
+      // 如果翻開的第一張等於第二張的話，就clear掉
+      if( $('.card:not(.close)').eq(0).attr('class') === $('.card:not(.close)').eq(1).attr('class')) {
+        // 加分
+        if (timeleft > 0) {
+            score += 10;
+            $("#text-score").text(score);
+          }
+      //  就淡出並clear，代表解決
+      $('.card:not(.close)').fadeTo(800, 0).addClass('clear')
+      }
+        
+
+        // delay兩秒鐘再翻回來
+        setTimeout(() => {
+        $('.card:not(.close)').addClass('close')
+          }, 2000);
+      }
+
+    })
+
+// 遊戲面板
+     function game () {
+
+        $('.option').fadeOut(1000)
+        $('#game').fadeIn(1000)
+        $('.board').fadeIn(1000)
+
+     // 產出卡片數量 16張
+      for(let i=0;i<10;i++) {
+      $('#game').fadeIn(1000).append(`
+              <div class="card close">
+              <div class="back"></div>
+              <div class="front"></div>
+              </div>
+          `)
+            }
+      
+      // 重設分數與時間
+      score = 0;
+      $("#text-score").text(score);
+      timeleft = 60;
+      $("#text-time").text(timeleft);
+            
+    // 產生正面
+    // 歌詞 8張
+    // 單字 8張  >>>> 總牌數16張再除以二  $(".card").length / 2
+    // 每組牌設置一配對的class
+    // 餘數等於第幾個，加一是因為i從0開始
+    for (let i = 0; i < $(".card").length / 2; i++) {
+        //先產生日期 
+        $(".card").eq(i).find(".front").css("background-image", `url(./cards/images/word/${i + 1}S.png)`);
+        $(".card").eq(i).addClass(`card${i + 1}`);
+        // 產生圖案
+        $(".card").eq(i + ($(".card").length / 2)).find(".front").css("background-image", `url(./cards/images/lyrics/${i + 1}.png)`);
+        $(".card").eq(i + ($(".card").length / 2)).addClass(`card${i + 1}`);
+      }
+
+    // 打亂卡片
+    // 隨機抽一張，移到該張後面
+    // 打亂40次
+    for(let i=0;i<40;i++){
+       const target = Math.floor( Math.random() * $(".card").length )
+       $('.card').eq(target).insertAfter( $(".card").eq(i) )
+    }
+
+  //遊戲進行中 
+
+  
+// 倒數計時器
+gameTimer = setInterval(() => {
+          timeleft--
+           $("#text-time").text(timeleft)
+           // 如果進入倒數十秒，倒數數字變成紅色
+           if(timeleft<=10){
+            $("#text-time").css('color', 'red')
+           }
+
+          //  如果都配對完
+           if($('.clear').length == $(".card").length) {
+             clearInterval(gameTimer)
+            //  過一秒跳出過關訊息
+              setTimeout(() => {
+                $("#win").show().delay(7000).hide(0);
+                $("#game").append(`<audio src="./LoveIsanOpenDoor.mp3" autoplay></audio>`)
+                document.getElementById("audio2").pause();
+                // $("#word").show().delay(5000)
+                setTimeout(() => {$("#select").append(`<p align="center"><button class="restart"><a href="javascript:window.location.reload()">PLAY AGAIN</a></button></p>`)
+                $("#select").append(`<p align="center"><button class="restart"><a href="http://127.0.0.1:5500/%E5%96%AE%E5%AD%97.html">查看解答</a></button></p>`)
+
+              // alert('過關');
+            }, 7500);
+              }, 100);
+           }
+            // 未在時間內配對完
+            else if(timeleft == 0 && $('.clear').length !== $(".card").length){
+              clearInterval(gameTimer)
+              setTimeout(()=>{
+                $("#lose").show().delay(7000).then(function(){
+                    location.reload();
+                    document.getElementById("audio2").pause();
+                })
+              },200) 
+              // $("#word").show().delay(5000)
+              $("#game").append(`<audio src="./losemusic.mp3" autoplay></audio>`)
+              $(".card").hide();
+              $("#select").append(`<p align="center"><button class="restart"><a href="javascript:window.location.reload()">PLAY AGAIN</a></button></p>`)
+              $("#select").append(`<p align="center"><button class="restart"><a href="http://127.0.0.1:5500/%E5%96%AE%E5%AD%97.html">查看解答</a></button></p>`)
+            }
+       }, 1000)
+}
+
+$('#startbtn').click(function(){
+  game();
+})
+
+$(function() {
+    $("#gifpic").show().delay(8000).hide(0);
+   setTimeout(function(){
+  document.getElementById("myVideo").play();
+}, 8000);
+}); 
+
+
+
+$('#startbtn').click(function(){
+  document.getElementById("myVideo").pause();
+  $("#game").append(`<audio id="audio2" src="./douwannabuildasnowmanrvsd.mp3" autoplay></audio>`);
+})
+
+    </script>
+</body>
+</html>
