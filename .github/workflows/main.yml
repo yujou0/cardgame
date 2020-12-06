@@ -24,7 +24,7 @@ jobs:
         env:
           GITHUB_TOKEN : ${{ secrets.GITHUB_TOKEN }}
           # 部署到 gh-pages 分支
-          BRANCH: gh-page
+          BRANCH: gh-pages
           # 編譯後要上傳的資料夾
           FOLDER: dist
           # 執行指令
